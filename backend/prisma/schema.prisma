@@ -1,0 +1,35 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// schema.prisma
+model Doctor {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  specialty String
+  patients  Patient[] @relation("DoctorPatients")
+  uploads   Upload[]
+}
+
+model Patient {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  doctorId  Int
+  doctor    Doctor    @relation(fields: [doctorId], references: [id], name: "DoctorPatients")
+}
+
+model Upload {
+  id        Int       @id @default(autoincrement())
+  filename  String
+  url       String
+  doctorId  Int
+  doctor    Doctor    @relation(fields: [doctorId], references: [id])
+}
